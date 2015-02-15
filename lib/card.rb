@@ -56,10 +56,13 @@ class Card
     VALUES.keys
   end
 
-  def self.to_val(in_key)
-    VALUES[in_key]
+  def to_val
+    VALUES[value]
   end
 
+  def self.val(key)
+    VALUES[key]
+  end
 
   def to_s
     SUITS[suit] + VALUE_STRINGS[value]

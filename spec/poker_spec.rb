@@ -88,7 +88,7 @@ describe Hand do
     end
   end
 
-  describe "#calculate_value" do
+  describe "#calculate_hand" do
     let(:a) { Card.new(:spades, :jack) }
     let(:b) { Card.new(:spades, :ten) }
     let(:c) { Card.new(:hearts, :jack) }
@@ -102,47 +102,47 @@ describe Hand do
 
     it "returns a pair if a pair" do
       subject.add_cards([a,b,c,i,j])
-      expect(subject.calculate_value).to eq(:pair)
+      expect(subject.calculate_hand).to eq(:pair)
     end
 
     it "returns a single if a single" do
       subject.add_cards([a,d,j,i,h])
-      expect(subject.calculate_value).to eq(:single)
+      expect(subject.calculate_hand).to eq(:single)
     end
 
     it "returns three_of" do
       subject.add_cards([a,c,e,b,j])
-      expect(subject.calculate_value).to eq(:three_of)
+      expect(subject.calculate_hand).to eq(:three_of)
     end
 
     it "returns a four_of" do
       subject.add_cards([a,c,e,f,j])
-      expect(subject.calculate_value).to eq(:four_of)
+      expect(subject.calculate_hand).to eq(:four_of)
     end
 
     it "returns two_pair" do
       subject.add_cards([a,b,c,d,j])
-      expect(subject.calculate_value).to eq(:two_pair)
+      expect(subject.calculate_hand).to eq(:two_pair)
     end
 
     it "returns full_house" do
       subject.add_cards([a,b,c,d,e])
-      expect(subject.calculate_value).to eq(:full_house)
+      expect(subject.calculate_hand).to eq(:full_house)
     end
 
     it "returns straight" do
       subject.add_cards([g,h,i,f,d])
-      expect(subject.calculate_value).to eq(:straight)
+      expect(subject.calculate_hand).to eq(:straight)
     end
 
     it "returns straight_flush" do
       subject.add_cards([a,b,g,h,i])
-      expect(subject.calculate_value).to eq(:straight_flush)
+      expect(subject.calculate_hand).to eq(:straight_flush)
     end
 
     it "returns flush" do
       subject.add_cards([a,j,g,h,i])
-      expect(subject.calculate_value).to eq(:flush)
+      expect(subject.calculate_hand).to eq(:flush)
     end
   end
 
@@ -158,6 +158,7 @@ describe Hand do
     let(:i) { Card.new(:spades, :nine) }
     let(:j) { Card.new(:spades, :five) }
     let(:k) { Card.new(:clubs, :eight) }
+    let(:l) { Card.new(:spades, :eight) }
     let(:other_hand) { Hand.new }
 
     it "compares singles" do
@@ -165,6 +166,7 @@ describe Hand do
       subject.add_cards([f,g,k,i,j])
 
       expect(subject.beats?(other_hand)).to eq(false)
+      expect(other_hand.beats?(subject)).to eq(true)
     end
 
     it "compares hands good" do
@@ -173,6 +175,22 @@ describe Hand do
 
       expect(subject.beats?(other_hand)).to eq(true)
       expect(other_hand.beats?(subject)).to eq(false)
+    end
+
+    it "compares tied two-pairs" do
+      other_hand.add_cards([a,b,c,d,h])
+      subject.add_cards([a,b,c,d,k])
+
+      expect(subject.beats?(other_hand)).to eq(false)
+      expect(other_hand.beats?(subject)).to eq(true)
+    end
+
+    it "compares two_pairs" do
+      other_hand.add_cards([a,b,c,d,j])
+      subject.add_cards([a,l,c,d,k])
+
+      expect(subject.beats?(other_hand)).to eq(false)
+      expect(other_hand.beats?(subject)).to eq(true)
     end
   end
 
